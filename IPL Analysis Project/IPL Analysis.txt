@@ -1,0 +1,85 @@
+*IPL Analysis :-
+
+--Title Winner = VAR MAX_DATE = CALCULATE(MAX('Calender Table'[Date]),ALLSELECTED('public ipl_matches_2008_2022'),VALUES('public ipl_matches_2008_2022'))
+		    var title_winner = CALCULATE(SELECTEDVALUE('public ipl_matches_2008_2022'[winning_team]), 'Calender Table'[Date] = MAX_DATE)
+		    RETURN title_winner
+  Exp:-MAX('Calender Table'[Date]) computes the maximum date from the 'Calendar Table'.
+	-ALLSELECTED('public ipl_matches_2008_2022') removes any filters that might be applied to the 'public ipl_matches_2008_2022' table, but respects the 
+                 user-selected filters.
+	-VALUES('public ipl_matches_2008_2022') is typically used to return a one-column table that contains the distinct values from the specified column, 
+                 although its use here seems redundant given the context of ALLSELECTED.
+Essentially, this part of the formula calculates the latest date (MAX_DATE) considering all user selections applied to the 'public ipl_matches_2008_2022' 
+table
+	-SELECTEDVALUE('public ipl_matches_2008_2022'[winning_team]) returns the value when the context for 'public ipl_matches_2008_2022'[winning_team] has 
+                 been filtered down to one distinct value.
+	-'Calender Table'[Date] = MAX_DATE filters the 'public ipl_matches_2008_2022' table to only include rows where the date matches MAX_DATE.
+This part of the formula calculates the winning team (title_winner) for the most recent match date (MAX_DATE).
+	-The RETURN statement outputs the value of title_winner, which is the winning team for the most recent match date.
+============================================================================================================================================================
+
+--Batter runs = CONCATENATE(SUM('public ipl_ball_by_ball_2008_2022'[batsman_run]), " Runs")
+     Exp:-The formula SUM('public ipl_ball_by_ball_2008_2022'[batsman_run]) calculates the total number of runs scored by a batsman across all matches in the 
+          dataset public ipl_ball_by_ball_2008_2022.
+         -The CONCATENATE function then converts this numeric total into a text string and appends the word " Runs" to it.
+         -The result is a single text string that gives a clear and human-readable representation of the total runs scored, e.g., "450 Runs".
+
+--Bowler Wickets = Bowler wickets = CONCATENATE(SUM('public ipl_ball_by_ball_2008_2022'[iswicket_delivery]), " Wickets")
+     Exp:-Same as above 
+
+============================================================================================================================================================
+*Strike Rate = (Runs Scored / Balls faced) * 100
+--Strick Rate = DIVIDE(SUM('public ipl_ball_by_ball_2008_2022'[batsman_run]),COUNT('public ipl_ball_by_ball_2008_2022'[ball_number]))*100
+	Exp:-This SUM('public ipl_ball_by_ball_2008_2022'[batsman_run]) part of the formula calculates the total runs scored by a batsman. It adds up all the 
+           values in the batsman_run column of the 'public ipl_ball_by_ball_2008_2022' table.
+          -This COUNT('public ipl_ball_by_ball_2008_2022'[ball_number]) part counts the number of balls faced by the batsman. It counts all the entries in 
+           the ball_number column of the same table.
+
+============================================================================================================================================================
+*Economy =  dividing the number of runs conceded by a bowler by the number of overs bowled
+--Economy = DIVIDE(
+    SUMX(FILTER('public ipl_ball_by_ball_2008_2022',
+    'public ipl_ball_by_ball_2008_2022'[extra_type]<>"legbyes" && 
+    'public ipl_ball_by_ball_2008_2022'[extra_type] <>"byes"),
+    'public ipl_ball_by_ball_2008_2022'[total_run]),(COUNT('public ipl_ball_by_ball_2008_2022'[overs]))/6
+============================================================================================================================================================
+*Average = It is calculated by dividing the total runs conceded by the bowler by the total wickets
+--Average of Bowler = DIVIDE(
+    SUMX(FILTER('public ipl_ball_by_ball_2008_2022',
+    'public ipl_ball_by_ball_2008_2022'[extra_type]<>"legbyes" && 
+    'public ipl_ball_by_ball_2008_2022'[extra_type] <>"byes"),
+    'public ipl_ball_by_ball_2008_2022'[total_run]),SUM('public ipl_ball_by_ball_2008_2022'[iswicket_delivery]))
+============================================================================================================================================================
+*Bowling SR = divide the number of deliveries they have bowled in an innings by the number of wickets they have taken
+--Bowling SR = COUNT('public ipl_ball_by_ball_2008_2022'[bowler])/SUM('public ipl_ball_by_ball_2008_2022'[iswicket_delivery])
+============================================================================================================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
